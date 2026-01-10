@@ -15,11 +15,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Prepare archive
         run: |
           TAG_NAME="${GITHUB_REF_NAME}"
           VERSION="${TAG_NAME#sdks/typescript/}"
           cd sdks/typescript
+          npm ci
+          npm run build
           npm pack
           ARCHIVE_NAME="typescript-sdk-${VERSION}.tgz"
           mv ./*.tgz "../../$ARCHIVE_NAME"
