@@ -1,0 +1,29 @@
+name: Release TypeScript SDK
+
+on:
+  push:
+    tags:
+      - "sdks/typescript/*"
+
+permissions:
+  contents: write
+
+jobs:
+  package-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare archive
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          VERSION="${TAG_NAME#sdks/typescript/}"
+          ARCHIVE_NAME="typescript-sdk-${VERSION}.tgz"
+          tar -czf "$ARCHIVE_NAME" -C sdks typescript
+          echo "ARCHIVE_NAME=$ARCHIVE_NAME" >> "$GITHUB_ENV"
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ARCHIVE_NAME }}
