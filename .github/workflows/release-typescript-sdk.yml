@@ -19,8 +19,10 @@ jobs:
         run: |
           TAG_NAME="${GITHUB_REF_NAME}"
           VERSION="${TAG_NAME#sdks/typescript/}"
+          cd sdks/typescript
+          npm pack
           ARCHIVE_NAME="typescript-sdk-${VERSION}.tgz"
-          tar -czf "$ARCHIVE_NAME" -C sdks typescript
+          mv ./*.tgz "../../$ARCHIVE_NAME"
           echo "ARCHIVE_NAME=$ARCHIVE_NAME" >> "$GITHUB_ENV"
 
       - name: Upload release asset
